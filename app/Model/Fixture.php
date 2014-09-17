@@ -18,7 +18,13 @@
 									),
 								'Winner'=>array(
 									'className'=>'Team',
-									'foreignKey'=>'winner_id'));
+									'foreignKey'=>'winner_id'),
+								'NonMemberTeam'=>array(
+									'className'=>'NonMemberTeam',
+									'foreignKey'=>'non_member_id'),
+								'NonMemberWinner'=>array(
+									'className'=>'NonMemberTeam',
+									'foreignKey'=>'non_member_winner'));
 
 
 		
@@ -96,21 +102,62 @@
 		public function adddata($data)
 		{
 			$this->recursive=-1;
+			//echo "<pre>"; print_r($data);
 			
-			$find_opponant=$this->Team->find('first',array('conditions'=>array('Team.team_name'=>$data['opponant_team'])));
-			$find_winner=$this->Team->find('first',array('conditions'=>array('Team.team_name'=>$data['winner'])));
+			$find_opponant=$this->Team->find('first',array('conditions'=>array('Team.team_name'=>$data['fixture']['opponant_team'])));
+			$find_winner=$this->Team->find('first',array('conditions'=>array('Team.team_name'=>$data['fixture']['winner'])));
+			//echo "<pre>"; print_r($find_winner); exit;
 			$value['Fixture']['team_id']='1';
-			$value['Fixture']['datetime']=$data['datepicker'];
-			$value['Fixture']['venue']=$data['venue'];
+			$value['Fixture']['datetime']=$data['fixture']['datepicker'];
+			$value['Fixture']['venue']=$data['fixture']['venue'];
 			$value['Fixture']['opponent_id']=$find_opponant['Team']['id'];
-			$value['Fixture']['score']=$data['result'];
+			$value['Fixture']['result']=$data['fixture']['result'];
 			$value['Fixture']['winner_id']=$find_winner['Team']['id'];
+			//echo "<pre>"; print_r($value); exit;
 			if($this->save($value))
 			{
-				return $find_opponant['Team']['team_name'];	
+				return $find_opponant['Team']['team_name'];
+					
 			}
 			
 			 
+		}
+
+		public function addnonmember($data)
+		{
+			$find_opponant=$this->NonMemberTeam->find('first',array('conditions'=>array('NonMemberTeam.team_name'=>$data['fixture']['other_team'])));
+			//echo "<pre>"; print_r($find_opponant); exit;
+			if(empty($find_opponant))
+			{
+				$data1['NonMemberTeam']['team_name']=$data['fixture']['add_other'];
+				$this->NonMemberTeam->save($data1);
+				
+				$find_opponant=$this->NonMemberTeam->find('first',array('conditions'=>array('NonMemberTeam.team_name'=>$data['fixture']['add_other'])));
+
+			}
+			$find_winner=$this->NonMemberTeam->find('first',array('conditions'=>array('NonMemberTeam.team_name'=>$data['fixture']['winner'])));
+				if(!empty($find_winner))
+				{
+					$value1['Fixture']['non_member_winner']=$find_winner['NonMemberTeam']['id'];	
+				}
+				else
+				{
+					$find_winner=$this->Team->find('first',array('conditions'=>array('Team.team_name'=>$data['fixture']['winner'])));
+					$value1['Fixture']['winner_id']=$find_winner['Team']['id'];
+				}
+				$value1['Fixture']['non_member_id']=$find_opponant['NonMemberTeam']['id'];		
+				$value1['Fixture']['team_id']='1';
+				$value1['Fixture']['datetime']=$data['fixture']['datepicker'];
+				$value1['Fixture']['venue']=$data['fixture']['venue'];
+				$value1['Fixture']['result']=$data['fixture']['result'];
+				
+				if($this->save($value1))
+				{
+					return $find_opponant['NonMemberTeam']['team_name'];
+				}
+
+			
+			
 		}
 		public function findaway($fid)
 		{

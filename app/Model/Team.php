@@ -3,7 +3,10 @@
 		public $useTable = 'team';
 		public $name='Team';
 
-		/*public $belongsTo=array('Fixture'=>array(
-					'className'=>'Fixture'))*/
+		public function getteam()
+		{
+			$find_team=$this->find('all');
+			return $find_team;
+		}
 	}
 ?>

@@ -10,12 +10,12 @@
 		</tr>
 		<?php for ($i=0; $i <11 ; $i++) { ?>
 			<tr class=<?php echo $i;?>>
-				<td><?php echo $this->Form->inupt('Away'.$i.'playername',array('label'=>false,'type'=>'text')); ?></td>
-				<td><?php echo $this->Form->inupt('Away'.$i.'desc',array('label'=>false,'type'=>'text')); ?></td>
-				<td><?php echo $this->Form->inupt('Away'.$i.'run',array('label'=>false,'type'=>'text')); ?></td>
-	 			<td><?php echo $this->Form->inupt('Away'.$i.'ball',array('label'=>false,'type'=>'text')); ?></td>
-	 			<td><?php echo $this->Form->inupt('Away'.$i.'4s',array('label'=>false,'type'=>'text')); ?></td>
-	 			<td><?php echo $this->Form->inupt('Away'.$i.'6s',array('label'=>false,'type'=>'text')); ?></td>
+				<td><?php echo $this->Form->input('Away'.$i.'playername',array('label'=>false,'type'=>'text')); ?></td>
+				<td><?php echo $this->Form->input('Away'.$i.'desc',array('label'=>false,'type'=>'text')); ?></td>
+				<td><?php echo $this->Form->input('Away'.$i.'run',array('label'=>false,'type'=>'text')); ?></td>
+	 			<td><?php echo $this->Form->input('Away'.$i.'ball',array('label'=>false,'type'=>'text')); ?></td>
+	 			<td><?php echo $this->Form->input('Away'.$i.'4s',array('label'=>false,'type'=>'text')); ?></td>
+	 			<td><?php echo $this->Form->input('Away'.$i.'6s',array('label'=>false,'type'=>'text')); ?></td>
 
 
 
@@ -31,7 +31,7 @@
 		</tr>
 		 <?php } ?>
 		<!-- <input name=<?php echo 'id' ?> value=<?php echo $away_id;  ?> type="hidden"> -->
-		<?php echo $this->Form->inupt('id',array('label'=>false,'type'=>'hidden','value'=>$away_id)); ?>
+		<?php echo $this->Form->input('id',array('label'=>false,'type'=>'hidden','value'=>$away_id)); ?>
 
 
 </table>

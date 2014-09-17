@@ -30,11 +30,11 @@
 		<?php for ($i=0; $i <11 ; $i++) { ?>
 		<tr class=<?php echo $i;?>>
 			<td><?php echo $this->Form->input('Home'.$i.'playername',array('label'=>false,'type'=>'select','options'=>$p_name)); ?></td>
-			<td><?php echo $this->Form->inupt('Home'.$i.'desc',array('label'=>false,'type'=>'text')); ?></td>
-			<td><?php echo $this->Form->inupt('Home'.$i.'run',array('label'=>false,'type'=>'text')); ?></td>
-			<td><?php echo $this->Form->inupt('Home'.$i.'ball',array('label'=>false,'type'=>'text')); ?></td>
-			<td><?php echo $this->Form->inupt('Home'.$i.'4s',array('label'=>false,'type'=>'text')); ?></td>
-			<td><?php echo $this->Form->inupt('Home'.$i.'6s',array('label'=>false,'type'=>'text')); ?></td>
+			<td><?php echo $this->Form->input('Home'.$i.'desc',array('label'=>false,'type'=>'text')); ?></td>
+			<td><?php echo $this->Form->input('Home'.$i.'run',array('label'=>false,'type'=>'text')); ?></td>
+			<td><?php echo $this->Form->input('Home'.$i.'ball',array('label'=>false,'type'=>'text')); ?></td>
+			<td><?php echo $this->Form->input('Home'.$i.'4s',array('label'=>false,'type'=>'text')); ?></td>
+			<td><?php echo $this->Form->input('Home'.$i.'6s',array('label'=>false,'type'=>'text')); ?></td>
 
 
 
