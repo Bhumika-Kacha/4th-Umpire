@@ -72,15 +72,17 @@
 			$this->set('fixtureid',$fixtureid);
 			if(!empty($this->request->data))
 			{
+				//echo "<pre>"; print_r($this->request->data); exit;
 				
 				$this->Fixture->updatedata($fixtureid,$this->request->data);
-				$this->redirect(array('controller' =>'AdminFixtures','action' => 'admin_editfixt_ball_stat',$fixtureid));	
+				$this->Session->setFlash("Data Updated");
+				$this->redirect(array('controller' =>'AdminFixtures','action' => 'edit_index',$fixtureid));	
 
 			}
 
 		}
 
-		public function admin_editfixt_ball_stat($fixtureid)
+		public function admin_editfixt_ball_stat($homeid,$fixtureid)
 		{
 			$find=$this->Fixture->edit_ball_view($fixtureid);
 			$home_team=$this->FixtureBall->getballinfo($fixtureid);
@@ -88,6 +90,8 @@
 				$home_team_name=$value['Team1']['team_name'];
 				$homeid=$value['Fixture']['team_id'];
 			}
+			$find_team=$this->Fixture->getteamid($fixtureid);
+			//echo "<pre>"; print_r($find_team); exit;
 			$this->set('homeid',$homeid);
 			$this->set('home_team_name',$home_team_name);
 			$this->set('fixtureid',$fixtureid);
@@ -100,13 +104,23 @@
 
 		}
 
-		public function admin_edit_away_ball($fixtureid)
+		public function admin_edit_away_ball($awayid,$fixtureid)
 		{
 			$find=$this->Fixture->edit_ball_view($fixtureid);
 			$away_team=$this->FixtureBall->getballinfo($fixtureid);
 			foreach ($find as $key => $value) {
-				$awayid=$value['Fixture']['opponent_id'];
-				$awayname=$value['Team']['team_name'];	
+				
+				if(empty($value['Team']['team_name']))
+				{
+					$awayid=$value['NonMemberTeam']['id'];
+					$awayname=$value['NonMemberTeam']['team_name'];
+				}
+				else
+				{
+					$awayid=$value['Fixture']['opponent_id'];
+					$awayname=$value['Team']['team_name'];
+				}
+					
 			}
 			$this->set('away_team_name',$awayname);
 			$this->set('awayid',$awayid);
@@ -114,13 +128,13 @@
 			$this->set('away_team',$away_team);
 			if(!empty($this->request->data))
 			{
-				//echo "<pre>"; print_r($this->request->data); exit;
+				echo "<pre>"; print_r($this->request->data); exit;
 				$this->FixtureBall->edit_ball($fixtureid,$this->request->data);
 				$this->redirect(array('controller' =>'AdminFixtures','action' => 'edit_index',$fixtureid));
 			}
 		}
 
-		public function admin_edit_home_bat($fixtureid)
+		public function admin_edit_home_bat($homeid,$fixtureid)
 		{
 			$find=$this->Fixture->edit_ball_view($fixtureid);
 			$home_team=$this->FixtureBat->getbatinfo($fixtureid);
@@ -143,17 +157,25 @@
 
 		}
 
-		public function admin_edit_away_bat($fixtureid)
+		public function admin_edit_away_bat($awayid,$fixtureid)
 		{
 			$find=$this->Fixture->edit_ball_view($fixtureid);
 			$away_team=$this->FixtureBat->getbatinfo($fixtureid);
 
 			foreach ($find as $key => $value) {
-				$away_team_name=$value['Team']['team_name'];
-				$awayid=$value['Fixture']['opponent_id'];
+				if(empty($value['Team']['team_name']))
+				{
+					$awayid=$value['NonMemberTeam']['id'];
+					$awayname=$value['NonMemberTeam']['team_name'];
+				}
+				else
+				{
+					$awayid=$value['Fixture']['opponent_id'];
+					$awayname=$value['Team']['team_name'];
+				}
 			}
 			$this->set('awayid',$awayid);
-			$this->set('away_team_name',$away_team_name);
+			$this->set('away_team_name',$awayname);
 			$this->set('fixtureid',$fixtureid);
 			$this->set('away_team',$away_team);
 			if(!empty($this->request->data))
@@ -167,7 +189,7 @@
 
 		public function admin_fixt_ball_stat($fixture_id)
 		{
-				echo "<pre>"; print_r($fixture_id); exit;
+				//echo "<pre>"; print_r($fixture_id); exit;
 				$this->set('fixtureid',$fixture_id);
 				$home_team=$this->Team->find('first',array('conditions'=>array('Team.id'=>'1'),
 															'fields'=>array('Team.team_name,Team.id')));
@@ -178,7 +200,7 @@
 				$this->set('home_team',$home_team);
 				if(!empty($this->request->data))
 				{
-					echo "<pre>"; print_r($this->request->data); exit;
+					//echo "<pre>"; print_r($this->request->data); exit;
 					foreach ($this->request->data['Fixture'] as $key => $value) {
 						$substr=substr($key,0,4);
 						if($substr=="Home")
@@ -199,7 +221,7 @@
 					
 					$this->FixtureBall->home_ball_stat($home,$fixture_id,$home_team['Team']['id']);
 				
-					$this->FixtureBall->away_ball_stat($away,$fixture_id,$this->request->data['id']);
+					$this->FixtureBall->away_ball_stat($away,$fixture_id,$this->request->data['id'],$this->request->data['team']);
 					$this->redirect(array('controller' =>'AdminFixtures','action' => 'admin_fixt_home_bat',$fixture_id));	
 
 
@@ -211,13 +233,33 @@
 		public function admin_fixt_away_ball()
 		{
 			$this->layout = 'ajax';
-			$find=$this->Fixture->findaway($this->request->data['fixtureid']);
+			$find_away=$this->Fixture->findaway($this->request->data['fixtureid']);
 			
+			foreach ($find_away['1'] as $key => $value) {
+					$awayteam_id=$value['id'];
+					$awayteam_name=$value['team_name'];
+			}
+			if($find_away['0']=='non_member')
+			{
+				$find_players=$this->NonMemberPlayer->searchdata($awayteam_id);
+				foreach ($find_players as $key => $value) {
+					$player_name[$value['NonMemberPlayer']['name']]=$value['NonMemberPlayer']['name'];
+
+				}
+
+			}
+			elseif($find_away['0']=='member')
+			{
+				$find_players=$this->Player->getplayer($awayteam_id);
+				foreach ($find_players as $key => $value) {
+					$player_name[$value['player']['first_name']]=$value['player']['first_name'];
+				}
+			}
 			
-			$away_team=$this->Team->find('first',array('conditions'=>array('Team.id'=>$find['Fixture']['opponent_id']),
-															'fields'=>array('Team.team_name,Team.id')));
-			$this->set('away_team',$away_team['Team']['team_name']);
-			$this->set('away_id',$away_team['Team']['id']);
+			$this->set('away_team',$awayteam_name);
+			$this->set('away_id',$awayteam_id);
+			$this->set('players',$player_name);
+			$this->set('team',$find_away['0']);
 		}
 
 
@@ -234,6 +276,7 @@
 			$this->set('home_team',$home_team);
 			if(!empty($this->request->data))
 			{
+				//echo "<pre>"; print_r($this->request->data); exit;
 				foreach ($this->request->data['Fixture'] as $key => $value) {
 						$substr=substr($key,0,4);
 						if($substr=="Home")
@@ -253,7 +296,7 @@
 				
 				$this->FixtureBat->home_bat_stat($home,$fixtureid,$home_team['Team']['id']);
 				
-				$this->FixtureBat->away_bat_stat($away,$fixtureid,$this->request->data['id']);
+				$this->FixtureBat->away_bat_stat($away,$fixtureid,$this->request->data['id'],$this->request->data['team']);
 				$this->Session->setFlash('Fixtures Saved Succesfully');
 				$this->redirect(array('controller' =>'Fixtures','action' => 'index'));	
 
@@ -263,12 +306,34 @@
 		public function admin_fixt_away_bat()
 		{
 			$this->layout="ajax";
-			$find=$this->Fixture->findaway($this->request->data['fixtureid']);
-			$away_team=$this->Team->find('first',array('conditions'=>array('Team.id'=>$find['Fixture']['opponent_id']),
-															'fields'=>array('Team.team_name,Team.id')));
+			$find_away=$this->Fixture->findaway($this->request->data['fixtureid']);
+			
+			foreach ($find_away['1'] as $key => $value) {
+					$awayteam_id=$value['id'];
+					$awayteam_name=$value['team_name'];
+			}
+			if($find_away['0']=='non_member')
+			{
+				$find_players=$this->NonMemberPlayer->searchdata($awayteam_id);
+				foreach ($find_players as $key => $value) {
+					$player_name[$value['NonMemberPlayer']['name']]=$value['NonMemberPlayer']['name'];
 
-			$this->set('away_team',$away_team['Team']['team_name']);
-			$this->set('away_id',$away_team['Team']['id']);
+				}
+
+			}
+			elseif($find_away['0']=='member')
+			{
+				$find_players=$this->Player->getplayer($awayteam_id);
+				foreach ($find_players as $key => $value) {
+					$player_name[$value['player']['first_name']]=$value['player']['first_name'];
+				}
+			}
+		/*	$away_team=$this->Team->find('first',array('conditions'=>array('Team.id'=>$find['Fixture']['opponent_id']),
+															'fields'=>array('Team.team_name,Team.id')));*/
+			$this->set('away_team',$awayteam_name);
+			$this->set('away_id',$awayteam_id);
+			$this->set('players',$player_name);
+			$this->set('team',$find_away['0']);
 
 		}
 
@@ -277,12 +342,27 @@
 
 			$find=$this->Fixture->editdata($fixtureid);
 			foreach ($find as $key => $value) {
+				
+				if(empty($value['Team']['team_name']))
+				{
+					$away_team=$value['NonMemberTeam']['team_name'];
+					$away_id=$value['NonMemberTeam']['id'];
+					
+				}
+				else
+				{
+					$away_team=$value['Team']['team_name'];
+					$away_id=$value['Team']['id'];
+				}
 				$home_team=$value['Team1']['team_name'];
-				$away_team=$value['Team']['team_name'];
+				$home_id=$value['Team1']['id'];
+				
 			}
 
 			$this->set('home_team',$home_team);
+			$this->set('home_id',$home_id);
 			$this->set('away_team',$away_team);
+			$this->set('away_id',$away_id);
 			$this->set('fixtureid',$fixtureid);
 
 		}

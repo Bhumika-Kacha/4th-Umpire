@@ -21,9 +21,18 @@
 			$f_bat=$this->FixtureBat->getbatinfo($fixtureid);
 
 
+
 			foreach ($fixture_stat as $key => $value) {
+				if(empty($value['Team']['team_name']))
+				{
+					$away_team_name=$value['NonMemberTeam']['team_name'];
+				}
+				else
+				{
+					$away_team_name=$value['Team']['team_name'];	
+				}
 				$home_team_name=$value['Team1']['team_name'];
-				$away_team_name=$value['Team']['team_name'];
+				
 			}
 			foreach ($f_ball as $key => $value) {
 
@@ -33,6 +42,7 @@
 				}
 				else
 				{
+					
 					$away_team_ball[]=$value;
 				}
 

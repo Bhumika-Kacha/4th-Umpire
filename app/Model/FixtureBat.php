@@ -11,6 +11,9 @@
 		public $belongsTo=array('Player'=>array(
 									'className'=>'Player',
 									'foreignKey'=>'playerid'),
+								'NonMemberPlayer'=>array(
+									'className'=>'NonMemberPlayer',
+									'foreignKey'=>'non_member_player_id'),
 								'Fixture'=>array(
 									'className'=>'Fixture',
 									'foreignKey'=>'fixtureid'));
@@ -57,7 +60,7 @@
 			
 		}
 
-		public function away_bat_stat($away,$fixtureid,$teamid)
+		public function away_bat_stat($away,$fixtureid,$teamid,$team)
 		{
 			$i=0;
 			$j=0;
@@ -67,11 +70,24 @@
 					if(!empty($value))
 					{
 						
-						$find_pid=$this->Player->find('first',array('conditions'=>array('Player.first_name'=>$away[$key]),
+						if($team=="non_member")
+						{
+							$find_pid=$this->NonMemberPlayer->find('first',array('conditions'=>array('NonMemberPlayer.name'=>$away[$key]),
+																		'fields'=>array('NonMemberPlayer.id')));
+							$data[$j]['non_member_player_id']=$find_pid['NonMemberPlayer']['id'];
+							$data[$j]['non_member_id']=$teamid;
+
+						}
+						elseif($team="member")
+						{
+							$find_pid=$this->Player->find('first',array('conditions'=>array('Player.first_name'=>$away[$key]),
 																	'fields'=>array('Player.id')));
-						$data[$j]['team_id']=$teamid;
+							$data[$j]['playerid']=$find_pid['Player']['id'];
+							$data[$j]['team_id']=$teamid;
+
+							
+						}
 						$data[$j]['fixtureid']=$fixtureid;
-						$data[$j]['playerid']=$find_pid['Player']['id'];
 						$detail='Away'.$j.'desc';
 						$data[$j]['detail']=$away[$detail];
 						$run='Away'.$j.'run';

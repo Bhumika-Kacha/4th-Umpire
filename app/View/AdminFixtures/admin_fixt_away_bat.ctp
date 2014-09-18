@@ -1,3 +1,12 @@
+<?php
+$j=0;
+	$p_name[]='select';
+	foreach ($players as $key => $value) {
+		$j++;
+		$p_name[$value]=$value;
+	}
+
+?>
 <h2><?php echo $away_team." "."Batting Statistics"; ?></h2>
 <table id="myTable">
 		<tr>
@@ -8,9 +17,9 @@
 			<th>4s</th>
 			<th>6s</th>
 		</tr>
-		<?php for ($i=0; $i <11 ; $i++) { ?>
+		<?php for ($i=0; $i <$j ; $i++) { ?>
 			<tr class=<?php echo $i;?>>
-				<td><?php echo $this->Form->input('Away'.$i.'playername',array('label'=>false,'type'=>'text')); ?></td>
+				<td><?php echo $this->Form->input('Away'.$i.'playername',array('label'=>false,'type'=>'select','options'=>$p_name)); ?></td>
 				<td><?php echo $this->Form->input('Away'.$i.'desc',array('label'=>false,'type'=>'text')); ?></td>
 				<td><?php echo $this->Form->input('Away'.$i.'run',array('label'=>false,'type'=>'text')); ?></td>
 	 			<td><?php echo $this->Form->input('Away'.$i.'ball',array('label'=>false,'type'=>'text')); ?></td>
@@ -32,6 +41,7 @@
 		 <?php } ?>
 		<!-- <input name=<?php echo 'id' ?> value=<?php echo $away_id;  ?> type="hidden"> -->
 		<?php echo $this->Form->input('id',array('label'=>false,'type'=>'hidden','value'=>$away_id)); ?>
+		<?php echo $this->Form->input('team',array('label'=>false,'type'=>'hidden','value'=>$team)); ?>
 
 
 </table>

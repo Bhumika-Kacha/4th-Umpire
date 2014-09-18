@@ -88,14 +88,22 @@
 
 		public function updatedata($fixtureid,$data)
 		{
-		//	echo "<pre>"; print_r($data); exit;
-			$find_opponant=$this->Team->find('first',array('conditions'=>array('Team.team_name'=>$data['opponant_team'])));
 			$find_winner=$this->Team->find('first',array('conditions'=>array('Team.team_name'=>$data['winner'])));
+			if(empty($find_winner))
+			{
+				$find_winner=$this->NonMemberTeam->find('first',array('conditions'=>array('NonMemberTeam.team_name'=>$data['winner'])));
+				// echo "<pre>"; print_r($find_winner); exit;
+				$win_team=$find_winner['NonMemberTeam']['team_name'];
+			}
+			else
+			{
+				$win_team=$find_winner['Team']['id'];
+			}
 			$this->updateAll(array('Fixture.datetime'=>'"'.$data['datepicker'].'"',
-									'Fixture.score'=>'"'.$data['result'].'"',
+									'Fixture.result'=>'"'.$data['result'].'"',
 									'Fixture.venue'=>'"'.$data['venue'].'"',
-									'Fixture.opponent_id'=>'"'.$find_opponant['Team']['id'].'"',
-									'Fixture.winner_id'=>'"'.$find_winner['Team']['id'].'"'),
+									// 'Fixture.opponent_id'=>'"'.$find_opponant['Team']['id'].'"',
+									'Fixture.winner_id'=>'"'.$win_team.'"'),
 								array('Fixture.id'=>$fixtureid));
 		}
 
@@ -161,10 +169,27 @@
 		}
 		public function findaway($fid)
 		{
+			// echo "<pre>"; print_r($fid); exit;
 			
 			$find=$this->find('first',array('conditions'=>array('Fixture.id'=>$fid),
-											'fields'=>array('Fixture.opponent_id')));
-			return $find;
+											'fields'=>array('Fixture.opponent_id','Fixture.non_member_id')));
+			
+
+			if(!empty($find['Fixture']['opponent_id']))
+			{
+				$find_opponant_team[]='member';
+				$find_opponant_team[]=$this->Team->find('first',array('conditions'=>array(
+														'Team.id'=>$find['Fixture']['opponent_id'])));
+
+			}
+			else
+			{
+				$find_opponant_team[]='non_member';
+				$find_opponant_team[]=$this->NonMemberTeam->find('first',array('conditions'=>array(
+																			'NonMemberTeam.id'=>$find['Fixture']['non_member_id'])));
+			}
+			
+			return $find_opponant_team;
 		}
 
 		public function edit_ball_view($fixtureid)
@@ -181,7 +206,10 @@
 			$this->delete($fixtureid,true);
 		}
 
+		public function getteamid($fixtureid)
+		{
 		
+		}
 		
 	}
 ?>

@@ -36,11 +36,18 @@
 			return $data;
 		}
 
-
 		public function getplayer($teamid)
 		{
+
 			$find=$this->TeamPlayer->find('all',array('conditions'=>array('TeamPlayer.teamid'=>$teamid)));
-			return $find;
+			foreach ($find as $key => $value) {
+				if($value['player']['role']=='player')
+				{
+					$find_p[]=$value;
+				}
+			}
+			
+			return $find_p;
 		}
 		
 

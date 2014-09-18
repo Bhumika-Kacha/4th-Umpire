@@ -1,5 +1,5 @@
 <?php
-	//echo "<pre>"; print_r($fixturedata); exit;
+	// /echo "<pre>"; print_r($fixturedata); exit;
 
 ?>
 <script type="text/javascript">
@@ -32,20 +32,35 @@
 					</p>
 					<p>
 						<label>Opponant Team :</label>
-                		<input name="opponant_team" id="opponant_team" value='<?php echo $value['Team']['team_name'];  ?>' type="text">
+					<?php  if(empty($value['Team']['team_name'])){ ?>
+						<input name="opponant_team" id="opponant_team" value='<?php echo $value['NonMemberTeam']['team_name'];  ?>' type="text" readonly>
+
+					<?php } else { ?>
+
+						<input name="opponant_team" id="opponant_team" value='<?php echo $value['Team']['team_name'];  ?>' type="text" readonly>
+					<?php } ?>   
+					
+                		
 					</p>
 					<p>
 						<label>Result :</label>
-                		<input name="result" id="result" value='<?php echo $value['Fixture']['score'];  ?>' type="text">
+                		<input name="result" id="result" value='<?php echo $value['Fixture']['result'];  ?>' type="text">
 					</p>
 					<p>
 						<label>Winner Team :</label>
-                		<input name="winner" id="winner" value='<?php echo $value['Winner']['team_name'];  ?>' type="text">
+						<?php  if(empty($value['Winner']['team_name'])){ ?>
+						<input name="winner" id="winner" value='<?php echo $value['NonMemberWinner']['team_name'];  ?>' type="text">
+
+					<?php } else { ?>
+
+						<input name="winner" id="winner" value='<?php echo $value['Winner']['team_name'];  ?>' type="text">
+					<?php } ?>
+                		
 					</p>	
 					
 					<?php } ?>
 					<p>
-                		<input type="submit" value="Next" class="submit"/>
+                		<input type="submit" value="Update" class="submit"/>
              		</p>
 				</div>
 			</fieldset>	

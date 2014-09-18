@@ -19,10 +19,16 @@
 		</tr>
 		<?php $i=0;
 		 foreach ($away_team as $key => $value) {
-				if($value['FixtureBat']['team_id']==$awayid){ ?>	
+				if($value['FixtureBat']['team_id']==$awayid || $value['FixtureBat']['non_member_id']==$awayid ){ ?>	
 
 		<tr>
-				<td><input name=<?php echo $i.'player'; ?> id="player" value='<?php echo $value['Player']['first_name'];  ?>' type="text"></td>
+				<?php if(empty($value['Player']['first_name'])){ ?> 
+				<td><input name=<?php echo $i.'player'; ?> id="player" value='<?php echo $value['NonMemberPlayer']['name'];  ?>' type="text"></td>					
+
+				<?php } else {?>
+					<td><input name=<?php echo $i.'player'; ?> id="player" value='<?php echo $value['Player']['first_name'];  ?>' type="text"></td>
+				<?php } ?>
+				
 				<td><input name=<?php echo $i.'detail'; ?> id="over" value='<?php echo $value['FixtureBat']['detail'];  ?>' type="text"></td>
 				<td><input name=<?php echo $i.'run'; ?> id="match" value='<?php echo $value['FixtureBat']['run'];  ?>' type="text"></td>
 				<td><input name=<?php echo $i.'balls'; ?> id="run" value='<?php echo $value['FixtureBat']['balls'];  ?>' type="text"></td>

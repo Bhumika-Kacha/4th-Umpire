@@ -72,7 +72,12 @@
 		<?php foreach ($away_team_bat as $key => $value) {
 		 ?>
 		 <tr>
-		 	<td><?php echo $value['Player']['first_name']; ?></td>
+		 	<?php if(empty($value['Player']['first_name'])){ ?>
+		 		<td><?php echo $value['NonMemberPlayer']['name']; ?></td>
+		 	<?php  } else {?>
+		 		<td><?php echo $value['Player']['first_name']; ?></td>
+		 	<?php }  ?>
+		 	
 		 	<td><?php echo $value['FixtureBat']['detail'];?></td>
 		 	<td><?php echo $value['FixtureBat']['run']?></td>
 		 	<td><?php echo $value['FixtureBat']['balls']?></td>
@@ -96,7 +101,12 @@
 		</tr>
 		<?php foreach ($away_team_ball as $key => $value) {?>
 		 <tr>
-		 	<td><?php echo $value['Player']['first_name']; ?></td>
+		 	<?php if(empty($value['Player']['first_name'])){ ?>
+		 		<td><?php echo $value['NonMemberPlayer']['name']; ?></td>
+		 	<?php  } else {?>
+		 		<td><?php echo $value['Player']['first_name']; ?></td>
+		 	<?php }  ?>
+		 	
 		 	<td><?php echo $value['FixtureBall']['o'];?></td>
 		 	<td><?php echo $value['FixtureBall']['m']?></td>
 		 	<td><?php echo $value['FixtureBall']['r']?></td>
