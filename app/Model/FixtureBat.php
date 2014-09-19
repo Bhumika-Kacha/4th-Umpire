@@ -172,5 +172,70 @@
 				 	
 			}  
 		}
+
+		public function edit_bat_away($fixtureid,$data)
+		{
+			// echo "<pre>"; print_r($data); exit;
+			$i=0;
+			$j=0;
+			foreach ($data as $key => $value) {
+				if($i%9==0)
+				{
+
+					if(!empty($value))
+					{
+
+						$pid=$j.'team';
+						if($data[$pid]=="non_member")
+						{
+							$find_pid=$this->NonMemberPlayer->find('first',array('conditions'=>array('NonMemberPlayer.name'=>$data[$key]),
+																				'fields'=>array('NonMemberPlayer.id')));
+							$p_id=$find_pid['NonMemberPlayer']['id'];
+							
+						}
+						else
+						{
+							$find_pid=$this->Player->find('first',array('conditions'=>array('Player.first_name'=>$data[$key]),
+																		'fields'=>array('Player.id')));
+							$p_id=$find_pid['Player']['id'];
+
+						}
+
+						$player=$p_id;
+						$detail=$j.'detail';
+						$run=$j.'run';
+						$balls=$j.'balls';
+						$fours=$j.'4s';
+						$sixs=$j.'6s';
+						$teamid=$j.'teamid';
+						$id=$j.'id';
+						$sr=round(($data[$run]/$data[$balls])*100,2);
+						$data1[$j]['playerid']=$player;
+						$data1[$j]['detail']=$data[$detail];
+						$data1[$j]['run']=$data[$run];
+						$data1[$j]['balls']=$data[$balls];
+						$data1[$j]['4s']=$data[$fours];
+						$data1[$j]['6s']=$data[$sixs];
+						$data1[$j]['team_id']=$data[$teamid];
+						$data1[$j]['sr']=$sr;
+						$data1[$j]['fixtureid']=$fixtureid;
+
+
+							if(!empty($data[$id]))
+							{
+								$this->id=$data[$id];
+								$this->save($data1[$j]);	
+							}
+
+						
+						$j++;
+
+					}
+					
+				}	 $i++;
+				 	
+			}   						
+						
+		}
 	}
 ?>

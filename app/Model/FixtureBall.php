@@ -179,5 +179,70 @@
 			 
 		}
 
+		public function edit_ball_away($fixtureid,$data)
+		{
+			$i=0;
+			$j=0;
+			foreach ($data as $key => $value) {
+				if($i%9==0)
+				{
+
+					if(!empty($value))
+					{
+
+
+						$pid=$j.'team';
+						if($data[$pid]=="non_member")
+						{
+							$find_pid=$this->NonMemberPlayer->find('first',array('conditions'=>array('NonMemberPlayer.name'=>$data[$key]),
+																				'fields'=>array('NonMemberPlayer.id')));
+							$p_id=$find_pid['NonMemberPlayer']['id'];
+							
+						}
+						else
+						{
+							$find_pid=$this->Player->find('first',array('conditions'=>array('Player.first_name'=>$data[$key]),
+																		'fields'=>array('Player.id')));
+							$p_id=$find_pid['Player']['id'];
+
+						}
+
+						$player=$p_id;
+						$over=$j.'over';
+						$match=$j.'match';
+						$run=$j.'run';
+						$wickets=$j.'wickets';
+						$extra=$j.'extra';
+						$teamid=$j.'teamid';
+						$id=$j.'id';
+						$econ=round($data[$run]/$data[$over],2);
+						$data1[$j]['playerid']=$player;
+						$data1[$j]['o']=$data[$over];
+						$data1[$j]['m']=$data[$match];
+						$data1[$j]['r']=$data[$run];
+						$data1[$j]['w']=$data[$wickets];
+						$data1[$j]['extra']=$data[$extra];
+						$data1[$j]['teamid']=$data[$teamid];
+						$data1[$j]['econ']=$econ;
+						$data1[$j]['fixtureid']=$fixtureid;
+
+						//echo "<pre>"; print_r($data1[$j]); 
+
+							if(!empty($data[$id]))
+							{
+								$this->id=$data[$id];
+								$this->save($data1[$j]);	
+							}
+						
+						
+						$j++;
+
+					}
+					
+				}	 $i++;
+				 	
+			} 
+		}
+
 	}
 ?>

@@ -1,12 +1,14 @@
-
+<?php
+	// echo "<pre>"; print_r($away_team); exit;
+?>
 <div>
 <?php	 echo $this->Form->create("fixtureball", array(
                                                   'url' => array('controller' => 'AdminFixtures', 
-                                                                  'action' => 'admin_edit_away_bat',$fixtureid)
+                                                                  'action' => 'admin_edit_away_bat',$awayid,$fixtureid)
                                     ));
 ?>
 <h2><?php echo $away_team_name;  ?></h2>
-<h3>Balling Statistics</h3>
+<h3>Batting Statistics</h3>
 	<table class="table table-hover">
 		<tr>
 				<th>Players</th>
@@ -19,7 +21,7 @@
 		</tr>
 		<?php $i=0;
 		 foreach ($away_team as $key => $value) {
-				if($value['FixtureBat']['team_id']==$awayid || $value['FixtureBat']['non_member_id']==$awayid ){ ?>	
+				if($value['FixtureBat']['team_id']==$awayid || $value['FixtureBat']['non_member_id']==$awayid ){  ?>	
 
 		<tr>
 				<?php if(empty($value['Player']['first_name'])){ ?> 
@@ -36,6 +38,11 @@
 				<td><input name=<?php echo $i.'6s'; ?> id="extra" value='<?php echo $value['FixtureBat']['6s'];  ?>' type="text"></td>
 				<input name=<?php echo $i.'teamid'; ?> value='<?php echo $value['FixtureBat']['team_id']; ?>' type="hidden">
 				<input name=<?php echo $i.'id'; ?> value='<?php echo $value['FixtureBat']['id']; ?>' type="hidden">
+				<?php if(empty($value['FixtureBat']['teamid'])){ ?>
+					<input name=<?php echo $i.'team'; ?> value='non_member' type="hidden">
+				<?php } else{?>
+					<input name=<?php echo $i.'team'; ?> value='member' type="hidden">
+				<?php } ?>
 		</tr>				
 		<?php $i++; } } ?>
 	</table>

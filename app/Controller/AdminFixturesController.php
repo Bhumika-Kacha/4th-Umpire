@@ -128,8 +128,8 @@
 			$this->set('away_team',$away_team);
 			if(!empty($this->request->data))
 			{
-				echo "<pre>"; print_r($this->request->data); exit;
-				$this->FixtureBall->edit_ball($fixtureid,$this->request->data);
+				//echo "<pre>"; print_r($this->request->data); exit;
+				$this->FixtureBall->edit_ball_away($fixtureid,$this->request->data);
 				$this->redirect(array('controller' =>'AdminFixtures','action' => 'edit_index',$fixtureid));
 			}
 		}
@@ -180,7 +180,7 @@
 			$this->set('away_team',$away_team);
 			if(!empty($this->request->data))
 			{
-				$this->FixtureBat->edit_bat($fixtureid,$this->request->data);
+				$this->FixtureBat->edit_bat_away($fixtureid,$this->request->data);
 				$this->redirect(array('controller' =>'AdminFixtures','action' => 'edit_index',$fixtureid));
 			}
 
